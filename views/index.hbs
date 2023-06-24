@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+.form-container {
+    width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form-container input[type=text],
+.form-container input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.form-container input[type=submit] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.form-container input[type=submit]:hover {
+    background-color: #45a049;
+}
+    </style>
+</head>
+<body>
+    {{>nav}}
+    <div class="form-container">
+    <form action="/" method="post">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" placeholder="Enter your name">
+
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email" placeholder="Enter your email">
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" placeholder="Enter your password">
+
+      <label for="Confirm Password">Confirm Password:</label>
+      <input type="password" id="cpassword" name="cpassword" placeholder="Confirm your password">
+
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</body>
+</html>
