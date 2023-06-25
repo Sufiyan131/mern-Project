@@ -4,9 +4,12 @@ const path = require("path")
 const app = express()
 const hbs = require("hbs")
 const Register = require("./models/login")
+const auth = require("../middleware/auth")
 const bcrypt = require("bcryptjs")
+const cookieParser = require("cookie-parser")
 require("./db/connection")
 const port = process.env.PORT
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 // app.use(express.static(path.join(__dirname, "../public")))
@@ -16,12 +19,35 @@ hbs.registerPartials(path.join(__dirname, "../partials"))
 app.get("/", (req, res) => {
     res.render("index")
 })
+
+app.get("/logout", auth, async (req, res) => {
+    try {
+        // for single logout
+        // req.user.tokens = req.user.tokens.filter((item) => {
+        //     return item.token !== req.token
+        // })
+
+        //logout from all devices 
+        req.user.tokens = []
+        res.clearCookie("jwt")
+        req.user.save()
+        console.log("logout successfully")
+        res.render("login")
+    } catch (e) {
+        res.status(401)
+    }
+})
 app.get("/login", (req, res) => {
     res.render("login")
 })
 
 app.get("/contact", (req, res) => {
     res.render("contact")
+})
+
+app.get("/secret", auth, (req, res) => {
+    res.render("secret")
+    // console.log(`this is a cookie ${req.cookies.jwt}`)
 })
 
 app.post("/", async (req, res) => {
@@ -37,6 +63,10 @@ app.post("/", async (req, res) => {
 
             const token = await register.generateAuthToken()
             console.log("the token " + token)
+            res.cookie("jwt", token, {
+                httpOnly: true,
+                // expires: new Date(Date.now() + 30000)
+            })
             const result = await register.save()
             console.log(result)
             res.status(201).render("login")
@@ -57,6 +87,10 @@ app.post("/login", async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password)
         const token = await user.generateAuthToken()
         console.log("the login token " + token)
+        res.cookie("jwt", token, {
+            httpOnly: true,
+            // expires: new Date(Date.now() + 30000)
+        })
         console.log(isMatch)
         if (user !== null && isMatch) {
             res.render("contact")
